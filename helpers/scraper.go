@@ -4,21 +4,37 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/aminoxix/highliSense-server/interfaces"
 	library "github.com/aminoxix/highliSense-server/libs"
 	"github.com/aminoxix/highliSense-server/utils"
 	"github.com/go-rod/rod"
 )
 
-func Scraper() string {
-	var array []string
-    page := rod.New().MustConnect().MustPage("https://github.com/github/gh-ost/pull/731") // access through link
+
+func Scraper(link string, content *interfaces.CONTENT) string {
+	var contentArray []string
+
+	// crawl through website URL to get the content
+    page := rod.New().MustConnect().MustPage(link) // access through link
+
+	// of paragraph tag
     paragraphs := page.MustWaitStable().MustElements("p")
+
+	// loop over paragraphs elements
 	for _, paragraph := range paragraphs {
-		content:= paragraph.MustEval(`() => this.innerText`).String()
+		// to get it's inner-text
+		text := paragraph.MustEval(`() => this.innerText`).String()
+		// & remove the new line by replacing it with empty string
 		str := regexp.MustCompile(`\n`)
-		result := str.ReplaceAllString(content, "")
-		array = append(array, result)
+		filteredString := str.ReplaceAllString(text, "")
+		contentArray = append(contentArray, filteredString)
 	}
-	filteredArray := utils.FilterEmptyStrings(array)
-	return library.Gemini(strings.Join(filteredArray, "\n "))
+	// more filtering to loop over contentArray & remove empty elements
+	filteredContentArray := utils.FilterEmptyStrings(contentArray)
+
+	// formatting the final filtered element's text by adding  new line
+	content.CONTEXT = strings.Join(filteredContentArray, "\n ")
+
+	// pass the formatted string to Gemini to process further...
+	return library.Gemini(content.CONTEXT, &content.HIGHLIGHTER)
 }
