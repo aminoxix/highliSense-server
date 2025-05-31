@@ -36,5 +36,5 @@ func Scraper(link string, content *interfaces.CONTENT) string {
 	content.CONTEXT = strings.Join(filteredContentArray, "\n ")
 
 	// pass the formatted string to Gemini to process further...
-	return library.Gemini(content.CONTEXT, &content.HIGHLIGHTER)
+	return library.Gemini(content.CONTEXT, content.HIGHLIGHTER)
 }

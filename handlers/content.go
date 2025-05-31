@@ -20,7 +20,7 @@ func PostContent(c *gin.Context) {
 		content.TEXT = helpers.Scraper(content.LINK, &content)
 	} else if content.TYPE == "extension" {
 		// directly pass to Gemini with highlighted text
-		content.TEXT = library.Gemini(content.CONTEXT, &content.HIGHLIGHTER)
+		content.TEXT = library.Gemini(content.CONTEXT, content.HIGHLIGHTER)
 	}
     c.JSON(http.StatusCreated, content)
 }

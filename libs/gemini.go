@@ -11,7 +11,7 @@ import (
 	"google.golang.org/genai"
 )
 
-func Gemini(content string, highlighter *string) string {
+func Gemini(content string, highlighter string) string {
 	err := godotenv.Load(".env") // Load the .env file
     if err != nil {
         log.Fatalf("Error loading .env file: %s", err)
@@ -42,6 +42,7 @@ func Gemini(content string, highlighter *string) string {
     `
 
     highlight := highlighter  // "I think this is safe to integrate. Could you update this PR branch?" // question
+    fmt.Println("highlighted", highlighter)
     finalPrompt := fmt.Sprintf(prompt, highlight, content)
 
     color.Yellow("PROMPT\n")
