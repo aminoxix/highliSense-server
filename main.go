@@ -3,16 +3,19 @@ package main
 import (
 	"net/http"
 
+	"github.com/aminoxix/highliSense-server/configs"
 	"github.com/aminoxix/highliSense-server/handlers"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
   router := gin.Default()
+  router.Use(configs.HandleCors)
+
   // grouping routes with prefix of:
   v1 := router.Group("/api/v1")
 
-  router.GET("/ping", func(c *gin.Context) {
+  v1.GET("/ping", func(c *gin.Context) {
     c.JSON(http.StatusOK, "pong")
   })
 
